@@ -1,0 +1,79 @@
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { Svg, Circle } from 'react-native-svg';
+
+const MetricClock = () => {
+  const [metricTime, setMetricTime] = useState('00');
+  const [strokeDashoffset, setStrokeDashoffset] = useState('565.48');
+
+  useEffect(() => {
+    const interval = setInterval(updateClock, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const convertToMetricTime = () => {
+    const now = new Date();
+    let start = new Date();
+    start.setHours(7, 0, 0); // Set start time to 7 AM
+
+    const diffInMinutes = (now - start) / 60000; // Difference in minutes
+    let metricHour = Math.ceil(diffInMinutes / 10);
+    
+    if (metricHour < 1) return "Before Metric Time";
+    if (metricHour > 100) return "After Metric Time";
+    return metricHour.toString().padStart(2, '0');
+  };
+
+  const updateCircularTimer = (metricTime) => {
+    // ... (Similar logic as in your JS code for calculating the offset)
+    // Remember to convert it to React Native's style
+  };
+
+  const updateClock = () => {
+    const metricTime = convertToMetricTime();
+    setMetricTime(metricTime);
+    updateCircularTimer(metricTime);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Svg height="200" width="200">
+        <Circle cx="100" cy="100" r="90" stroke="#ddd" strokeWidth="12" fill="none" />
+        <Circle cx="100" cy="100" r="90" stroke="#f00" strokeWidth="8" fill="none"
+                strokeDasharray="565.48"
+                strokeDashoffset={strokeDashoffset}
+                rotation="-90"
+                origin="100, 100" />
+        <Text x="100" y="100" fill="black" fontSize="40"
+              textAnchor="middle">{metricTime}</Text>
+      </Svg>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+  },
+  clock: {
+    backgroundColor: '#fff',
+    padding: 20,
+    elevation: 10, // This adds a shadow in Android
+    shadowColor: '#000', // This adds a shadow in iOS
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+  },
+  timerPath: {
+    // React Native does not support transitions as in web CSS
+    // Animations would have to be handled differently, possibly with Animated API
+  },
+  metricTimeText: {
+    // Styles for the text component
+  },
+});
+
+export default MetricClock;
