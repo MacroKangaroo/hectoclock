@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import { Svg, Circle, Text as SvgText } from 'react-native-svg'; // Import Text as SvgText
 
 const MetricClock = () => {
@@ -7,11 +7,9 @@ const MetricClock = () => {
   const [strokeDashoffset, setStrokeDashoffset] = useState('565.48');
   const clockRadius = 150;
   const clockStrokeWidth = 15;
-  const clockPosX = clockRadius + clockStrokeWidth / 2;
-  const clockPosY = clockPosX;
-  const boundingBoxWidth = clockRadius * 2 + clockStrokeWidth;
-  const boundingBoxHeight = boundingBoxWidth;
-  const circumference = 2 * Math.PI * clockRadius; // Circumference of the circle
+  const clockPosX = Dimensions.get('window').width/2;
+  const clockPosY = Dimensions.get('window').height/2 - 40; // Not sure why this offset is necessary to center it...
+  const circumference = 2 * Math.PI * clockRadius;
 
   useEffect(() => {
     const interval = setInterval(updateClock, 1000);
@@ -48,7 +46,7 @@ const MetricClock = () => {
 
   return (
     <View style={styles.container}>
-      <Svg height={boundingBoxHeight} width={boundingBoxWidth}>
+      <Svg height="100%" width="100%">
         <Circle
           cx={clockPosX}
           cy={clockPosY}
@@ -105,7 +103,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f0f0f0',
   },
-  // Other styles if necessary
 });
 
 export default MetricClock;
