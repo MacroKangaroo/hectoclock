@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableOpacity, Text } from 'react-native';
 import { Svg, Circle, Text as SvgText } from 'react-native-svg'; // Import Text as SvgText
+
 
 const MetricClock = () => {
   const [metricTime, setMetricTime] = useState('00');
@@ -10,6 +11,9 @@ const MetricClock = () => {
   const clockPosX = Dimensions.get('window').width/2;
   const clockPosY = Dimensions.get('window').height/2 - 40; // Not sure why this offset is necessary to center it...
   const circumference = 2 * Math.PI * clockRadius;
+  const [startTime, setStartTime] = useState(6); // Default start time is 6 AM _________
+  const hours = [3, 4, 5, 6, 7, 8, 9, 10, 11]; // Array of available start times _________
+
 
   useEffect(() => {
     const interval = setInterval(updateClock, 1000);
@@ -19,7 +23,7 @@ const MetricClock = () => {
   const convertToMetricTime = () => {
     const now = new Date();
     let start = new Date();
-    start.setHours(6, 0, 0); // Set start time to 6 AM
+    start.setHours(startTime, 0, 0); 
 
     const diffInMinutes = (now - start) / 60000; // Difference in minutes
     let metricHour = Math.ceil(diffInMinutes / 10);
@@ -43,6 +47,20 @@ const MetricClock = () => {
     setMetricTime(metricTimeValue);
     updateCircularTimer();
   };
+
+  
+  const changeStartTime = (direction) => {
+    let currentIndex = hours.indexOf(startTime);
+    if (direction === 'left') {
+      currentIndex = currentIndex === 0 ? hours.length - 1 : currentIndex - 1;
+    } else {
+      currentIndex = currentIndex === hours.length - 1 ? 0 : currentIndex + 1;
+    }
+    setStartTime(hours[currentIndex]);
+    updateClock();
+  };
+  
+
 
   return (
     <View style={styles.container}>
@@ -92,6 +110,15 @@ const MetricClock = () => {
           %
         </SvgText>
       </Svg>
+      <View style={styles.timerChanger}>
+      <TouchableOpacity onPress={() => changeStartTime('left')}>
+        <Text style={styles.arrowText}>{"<"}</Text>
+      </TouchableOpacity>
+      <Text style={styles.hourText}>{`${startTime} AM`}</Text>
+      <TouchableOpacity onPress={() => changeStartTime('right')}>
+        <Text style={styles.arrowText}>{">"}</Text>
+      </TouchableOpacity>
+    </View>
     </View>
   );
 };
@@ -103,6 +130,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f0f0f0',
   },
+    timerChanger: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 20,
+    },
+    arrowText: {
+      fontSize: 24,
+      marginHorizontal: 20,
+      // Add more styles as needed
+    },
+    hourText: {
+      fontSize: 24,
+      // Add more styles as needed
+    },
+  
 });
 
 export default MetricClock;
