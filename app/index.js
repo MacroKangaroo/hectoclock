@@ -5,7 +5,13 @@ import { Svg, Circle, Text as SvgText } from 'react-native-svg'; // Import Text 
 const MetricClock = () => {
   const [metricTime, setMetricTime] = useState('00');
   const [strokeDashoffset, setStrokeDashoffset] = useState('565.48');
-  const circumference = 2 * Math.PI * 90; // Circumference of the circle
+  const clockRadius = 150;
+  const clockStrokeWidth = 15;
+  const clockPosX = clockRadius + clockStrokeWidth / 2;
+  const clockPosY = clockPosX;
+  const boundingBoxWidth = clockRadius * 2 + clockStrokeWidth;
+  const boundingBoxHeight = boundingBoxWidth;
+  const circumference = 2 * Math.PI * clockRadius; // Circumference of the circle
 
   useEffect(() => {
     const interval = setInterval(updateClock, 1000);
@@ -15,7 +21,7 @@ const MetricClock = () => {
   const convertToMetricTime = () => {
     const now = new Date();
     let start = new Date();
-    start.setHours(7, 0, 0); // Set start time to 7 AM
+    start.setHours(6, 0, 0); // Set start time to 6 AM
 
     const diffInMinutes = (now - start) / 60000; // Difference in minutes
     let metricHour = Math.ceil(diffInMinutes / 10);
@@ -42,37 +48,50 @@ const MetricClock = () => {
 
   return (
     <View style={styles.container}>
-      <Svg height="200" width="200">
+      <Svg height={boundingBoxHeight} width={boundingBoxWidth}>
         <Circle
-          cx="100"
-          cy="100"
-          r="90"
+          cx={clockPosX}
+          cy={clockPosY}
+          r={clockRadius}
           stroke="#ddd"
-          strokeWidth="12"
+          strokeWidth={clockStrokeWidth}
           fill="none"
         />
         <Circle
-          cx="100"
-          cy="100"
-          r="90"
+          cx={clockPosX}
+          cy={clockPosY}
+          r={clockRadius}
           stroke="#f00"
-          strokeWidth="8"
+          strokeWidth={clockStrokeWidth}
           fill="none"
           strokeDasharray={`${circumference}`}
           strokeDashoffset={strokeDashoffset}
+          strokeLinecap='round'
           rotation="-90"
-          origin="100, 100"
+          origin={clockPosX + ", " + clockPosY}
         />
-        <SvgText // Use SvgText instead of Text
-          x="100"
-          y="100"
+        <SvgText
+          x={clockPosX}
+          y={clockPosY + 5}
           fill="black"
-          fontSize="40" // Adjust fontSize as needed
-          fontWeight="bold" // Optional: if you want the text to be bold
+          fontSize="90"
+          fontWeight="bold"
+          fontFamily="helvetica"
           textAnchor="middle"
           alignmentBaseline="middle"
         >
           {metricTime}
+        </SvgText>
+        <SvgText
+          x={clockPosX + 60}
+          y={clockPosY + 20}
+          fill="black"
+          fontSize="20"
+          fontFamily="helvetica"
+          textAnchor="middle"
+          alignmentBaseline="middle"
+        >
+          %
         </SvgText>
       </Svg>
     </View>
