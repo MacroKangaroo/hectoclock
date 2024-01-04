@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity, Text } from 'react-native';
 import { Svg, Circle, Text as SvgText } from 'react-native-svg'; // Import Text as SvgText
 
@@ -12,8 +12,12 @@ const MetricClock = () => {
   const clockPosY = Dimensions.get('window').height/2 - 40; // Not sure why this offset is necessary to center it...
   const circumference = 2 * Math.PI * clockRadius;
   const [startTime, setStartTime] = useState(6); // Default start time is 6 AM _________
+  const startTimeRef = useRef(startTime);
   const hours = [3, 4, 5, 6, 7, 8, 9, 10, 11]; // Array of available start times _________
 
+  useEffect(() => {
+    startTimeRef.current = startTime;
+  }, [startTime]);
 
   useEffect(() => {
     const interval = setInterval(updateClock, 1000);
@@ -23,7 +27,7 @@ const MetricClock = () => {
   const convertToMetricTime = () => {
     const now = new Date();
     let start = new Date();
-    start.setHours(startTime, 0, 0); 
+    start.setHours(startTimeRef.current, 0, 0); 
 
     const diffInMinutes = (now - start) / 60000; // Difference in minutes
     let metricHour = Math.ceil(diffInMinutes / 10);
