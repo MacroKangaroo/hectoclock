@@ -7,7 +7,8 @@
     "plugins": [
       "expo-router"
     ],
-    "name": "hectoclock",
-    "slug": "hectoclock"
+    "name": "HectoClock",
+    "slug": "hectoclock",
+    "icon": "./assets/icon.png"
   }
 }
